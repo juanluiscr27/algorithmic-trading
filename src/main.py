@@ -1,10 +1,11 @@
 # This is a Python script for an Equal-Weight S&P 500 Index Fund
-import screener
+import screener as sp500
 
 
 def main():
     print("S&P 500 Index Fund Screener")
-    screener.import_stocks()
+    sp500.import_stocks()
+    sp500.search_symbol("AAPL")
 
 
 if __name__ == '__main__':

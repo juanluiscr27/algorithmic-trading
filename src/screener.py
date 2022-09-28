@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 import xlsxwriter
 import math
-from src.secrets import IEX_CLOUD_API_TOKEN
+from src.project_secrets import IEX_CLOUD_API_TOKEN
 
 
 def import_stocks():
@@ -11,8 +11,8 @@ def import_stocks():
     print(stocks)
 
 
-def search_symbol(symbol=None):
-    if not symbol:
-        symbol = "AAPL"
+def search_symbol(symbol):
+    api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/quote/?token={IEX_CLOUD_API_TOKEN}"
+    data = requests.get(api_url)
+    print(f"STATUS CODE: {data.status_code}")
 
-    api_url = f"https://sandbox.iexapis.com/stock/{symbol}/quote/"
