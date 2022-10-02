@@ -18,9 +18,27 @@ def search_symbol(symbol):
     return data.json()
 
 
-def get_info(symbol):
+def get_data(symbol):
     data = search_symbol(symbol)
     print("Stock: " + symbol)
     print(f"Latest Price: {data['latestPrice']}")
-    print(f"Market Cap: {round(data['marketCap']/1e9,2)}B")
+    print(f"Market Cap: {round(data['marketCap'] / 1e9, 2)}B")
 
+
+def append_data(symbol):
+    data = search_symbol(symbol)
+    data_columns = ["Ticker", "Stock Price", "Market Capitalization", "Shares to Buy"]
+    df = pd.DataFrame(columns=data_columns)
+    df = pd.concat([
+        df,
+        pd.Series([
+            symbol,
+            data["latestPrice"],
+            data["marketCap"]/1e9,
+            "NaN"
+        ],
+            index=data_columns
+        ).to_frame().T],
+        ignore_index=True
+    )
+    print(df)
