@@ -14,5 +14,13 @@ def import_stocks():
 def search_symbol(symbol):
     api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/quote/?token={IEX_CLOUD_API_TOKEN}"
     data = requests.get(api_url)
-    print(f"STATUS CODE: {data.status_code}")
+    print(f"SEARCH STATUS CODE: {data.status_code}")
+    return data.json()
+
+
+def get_info(symbol):
+    data = search_symbol(symbol)
+    print("Stock: " + symbol)
+    print(f"Latest Price: {data['latestPrice']}")
+    print(f"Market Cap: {round(data['marketCap']/1e9,2)}B")
 
