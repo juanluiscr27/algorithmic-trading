@@ -27,7 +27,7 @@ def get_data(symbol):
 
 def append_data(symbol):
     data = search_symbol(symbol)
-    data_columns = ["Ticker", "Stock Price", "Market Capitalization", "Shares to Buy"]
+    data_columns = ["Ticker", "Stock Price", "Market Capitalization", "Number of Shares to Buy"]
     df = pd.DataFrame(columns=data_columns)
     df = pd.concat([
         df,
@@ -42,3 +42,27 @@ def append_data(symbol):
         ignore_index=True
     )
     print(df)
+
+
+def get_data_all():
+    data_columns = ["Ticker", "Stock Price", "Market Capitalization", "Number of Shares to Buy"]
+    df = pd.DataFrame(columns=data_columns)
+    stocks = pd.read_csv('./data/sp_500_stocks.csv')
+    for stock in stocks["Ticker"][:5]:
+        api_url = f"https://sandbox.iexapis.com/stable/stock/{stock}/quote/?token={IEX_CLOUD_API_TOKEN}"
+        data = requests.get(api_url).json()
+        df = pd.concat([
+            df,
+            pd.Series([
+                stock,
+                data["latestPrice"],
+                data["marketCap"],
+                "NaN"
+            ],
+                index=data_columns
+            ).to_frame().transpose()],
+            ignore_index=True
+        )
+
+    print(df)
+

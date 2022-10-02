@@ -7,7 +7,9 @@ def main():
     # sp500.import_stocks()
     # sp500.search_symbol("AAPL")
     # sp500.get_data("AAPL")
-    sp500.append_data("AAPL")
+    # sp500.append_data("AAPL")
+    # sp500.get_data_all()
+    sp500.get_data_batch()
 
 
 if __name__ == '__main__':
