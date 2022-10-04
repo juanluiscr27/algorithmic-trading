@@ -102,3 +102,15 @@ def get_data_batch():
             )
 
     print(df)
+
+
+def set_portfolio():
+    size = input("Enter the value of your portfolio: ")
+    try:
+        value = float(size)
+        return value
+    except ValueError:
+        print("Your input was not a valid number")
+        return set_portfolio()
+
+
