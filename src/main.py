@@ -9,7 +9,8 @@ def main():
     # sp500.get_data("AAPL")
     # sp500.append_data("AAPL")
     # sp500.get_data_all()
-    sp500.get_data_batch()
+    # sp500.get_data_batch()
+    sp500.get_shares_to_buy()
 
 
 if __name__ == '__main__':

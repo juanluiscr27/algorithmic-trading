@@ -101,7 +101,7 @@ def get_data_batch():
                 ignore_index=True
             )
 
-    print(df)
+    return df
 
 
 def set_portfolio():
@@ -114,3 +114,11 @@ def set_portfolio():
         return set_portfolio()
 
 
+def get_shares_to_buy():
+    value = set_portfolio()
+    df = get_data_batch()
+    position_size = value/len(df.index)
+    for i in range(len(df.index)):
+        df.loc[i, "Number of Shares to Buy"] = math.floor(position_size/df.loc[i, "Stock Price"])
+
+    print(df)
