@@ -1,9 +1,7 @@
-import numpy as np
 import pandas as pd
 import requests
-import xlsxwriter
 import math
-from src.project_secrets import IEX_CLOUD_API_TOKEN
+from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 
 def import_stocks():

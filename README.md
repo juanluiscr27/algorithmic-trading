@@ -1,4 +1,6 @@
-# Equal-Weight S&P 500 Index Fund
+# Algorithmic Trading Using Python
+
+## Equal-Weight S&P 500 Index Fund
 
 -----
 
@@ -12,3 +14,11 @@ the performance of the index.
 The S&P 500 index is a market capitalization-weighted index. The index is one of the factors 
 in computation of the Conference Board Leading Economic Index, used to forecast the direction of the 
 economy.
+
+## A Quantitative Momentum Investing Strategy
+
+-----
+
+## Building A Quantitative Value Investing Strategy
+
+-----
