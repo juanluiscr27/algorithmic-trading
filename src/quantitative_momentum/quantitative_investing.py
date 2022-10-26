@@ -3,7 +3,8 @@ import strategy as mtm
 
 
 def main():
-    mtm.import_stocks()
+    # mtm.import_stocks()
+    mtm.stats_api_call("AAPL")
 
 
 if __name__ == "__main__":
