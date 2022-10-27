@@ -6,7 +6,8 @@ def main():
     # mtm.import_stocks()
     # mtm.stats_api_call("AAPL")
     # mtm.get_change_pct("AAPL")
-    mtm.get_data_batch()
+    # mtm.get_data_batch()
+    mtm.remove_low_momentum()
 
 
 if __name__ == "__main__":

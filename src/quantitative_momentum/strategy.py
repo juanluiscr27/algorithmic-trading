@@ -38,7 +38,7 @@ def get_data_batch():
 
     data_columns = ["Ticker", "Price", "One-Year Price Return", "Number of Shares to Buy"]
     df = pd.DataFrame(columns=data_columns)
-    for symbol_string in symbol_strings[:1]:
+    for symbol_string in symbol_strings:
         batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
                         f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
         data = requests.get(batch_api_call_url).json()
@@ -57,4 +57,13 @@ def get_data_batch():
                 ignore_index=True
             )
 
-    print(df)
+    # print(df)
+    return df
+
+
+def remove_low_momentum():
+    df = get_data_batch()
+    df.sort_values("One-Year Price Return", ascending=False, inplace=True)
+    high_momentum_stocks = df[:50]
+    high_momentum_stocks.reset_index(inplace=True)
+    print(high_momentum_stocks)
