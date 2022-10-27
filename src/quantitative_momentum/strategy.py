@@ -66,4 +66,20 @@ def remove_low_momentum():
     df.sort_values("One-Year Price Return", ascending=False, inplace=True)
     high_momentum_stocks = df[:50]
     high_momentum_stocks.reset_index(inplace=True)
-    print(high_momentum_stocks)
+    # print(high_momentum_stocks)
+    return high_momentum_stocks
+
+
+def set_portfolio():
+    size = input("Enter the value of your portfolio: ")
+    try:
+        value = float(size)
+        return value
+    except ValueError:
+        print("Your input was not a valid number")
+        return set_portfolio()
+
+
+def number_shares_buy():
+    high_momentum_stocks = remove_low_momentum()
+    portfolio_size = set_portfolio()
