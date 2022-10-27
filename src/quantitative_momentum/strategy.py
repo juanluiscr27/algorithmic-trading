@@ -14,4 +14,10 @@ def import_stocks():
 def stats_api_call(symbol):
     api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/stats?token={IEX_CLOUD_API_TOKEN}"
     data = requests.get(api_url).json()
-    print(data)
+    # print(data)
+    return data
+
+
+def get_change_pct(symbol):
+    data = stats_api_call(symbol)
+    print(data['year1ChangePercent'])
