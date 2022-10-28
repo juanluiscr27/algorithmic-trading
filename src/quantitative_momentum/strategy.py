@@ -76,10 +76,15 @@ def set_portfolio():
         value = float(size)
         return value
     except ValueError:
-        print("Your input was not a valid number")
+        print("Your input was not a valid number.")
         return set_portfolio()
 
 
-def number_shares_buy():
+def get_shares_to_buy():
     high_momentum_stocks = remove_low_momentum()
     portfolio_size = set_portfolio()
+    position_size = portfolio_size/len(high_momentum_stocks.index)
+    for index in range(len(high_momentum_stocks)):
+        high_momentum_stocks.loc[index, "Number of Shares to Buy"] = math.floor(position_size /
+                                                                high_momentum_stocks.loc[index, "Price"])
+    print(high_momentum_stocks)
