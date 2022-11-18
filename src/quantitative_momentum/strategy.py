@@ -118,6 +118,7 @@ def high_quality_momentum():
     for _, symbol_group in enumerate(symbol_groups):
         symbol_strings.append(",".join(symbol_group))
 
+    # API batch request
     for symbol_string in symbol_strings:
         batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
                              f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
@@ -143,5 +144,12 @@ def high_quality_momentum():
             ],
                 ignore_index=True
             )
+
+    # Calculating the time periods percentiles
+    time_periods = ["One-Year", "Six-Month" "Three-Month", "One-Month"]
+
+    for row in hdm_df.index:
+        for time_period in time_periods:
+            hdm_df.loc[row, f"{time_period} Return Percentile"] = 0
 
     print(hdm_df)
