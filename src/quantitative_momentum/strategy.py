@@ -119,7 +119,7 @@ def high_quality_momentum():
         symbol_strings.append(",".join(symbol_group))
 
     # API batch request
-    for symbol_string in symbol_strings:
+    for symbol_string in symbol_strings[:1]:
         batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
                              f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
         data = requests.get(batch_api_call_url).json()
@@ -129,15 +129,15 @@ def high_quality_momentum():
                 pd.Series([
                     symbol,
                     data[symbol]["price"],
-                    "N/A",
+                    np.nan,
                     data[symbol]["stats"]["year1ChangePercent"],
-                    "N/A",
+                    np.nan,
                     data[symbol]["stats"]["month6ChangePercent"],
-                    "N/A",
+                    np.nan,
                     data[symbol]["stats"]["month3ChangePercent"],
-                    "N/A",
+                    np.nan,
                     data[symbol]["stats"]["month1ChangePercent"],
-                    "N/A"
+                    np.nan
                 ],
                     index=hqm_columns
                 ).to_frame().T
@@ -146,10 +146,12 @@ def high_quality_momentum():
             )
 
     # Calculating the time periods percentiles
-    time_periods = ["One-Year", "Six-Month" "Three-Month", "One-Month"]
-
+    time_periods = ["One-Year", "Six-Month", "Three-Month", "One-Month"]
     for row in hdm_df.index:
         for time_period in time_periods:
-            hdm_df.loc[row, f"{time_period} Return Percentile"] = 0
+            hdm_df.loc[row, f"{time_period} Return Percentile"] = stats.percentileofscore(
+                hdm_df[f"{time_period} Price Return"],
+                hdm_df.loc[row, f"{time_period} Price Return"]
+            )
 
     print(hdm_df)
