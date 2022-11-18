@@ -40,7 +40,7 @@ def get_data_batch():
     df = pd.DataFrame(columns=data_columns)
     for symbol_string in symbol_strings:
         batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
-                        f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
+                             f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
         data = requests.get(batch_api_call_url).json()
         for symbol in symbol_string.split(","):
             df = pd.concat([
@@ -83,8 +83,65 @@ def set_portfolio():
 def get_shares_to_buy():
     high_momentum_stocks = remove_low_momentum()
     portfolio_size = set_portfolio()
-    position_size = portfolio_size/len(high_momentum_stocks.index)
+    position_size = portfolio_size / len(high_momentum_stocks.index)
     for index in range(len(high_momentum_stocks)):
-        high_momentum_stocks.loc[index, "Number of Shares to Buy"] = math.floor(position_size /
-                                                                high_momentum_stocks.loc[index, "Price"])
+        high_momentum_stocks.loc[
+            index,
+            "Number of Shares to Buy"
+        ] = math.floor(position_size / high_momentum_stocks.loc[index, "Price"])
+
     print(high_momentum_stocks)
+
+
+def high_quality_momentum():
+    # Defining Data Frame columns
+    hqm_columns = [
+        "Ticker",
+        "Price",
+        "Number of Shares to Buy",
+        "One-Year Price Return",
+        "One-Year Return Percentile",
+        "Six-Month Price Return",
+        "Six-Month Return Percentile",
+        "Three-Month Price Return",
+        "Three-Month Return Percentile",
+        "One-Month Price Return",
+        "One-Month Return Percentile"
+    ]
+
+    hdm_df = pd.DataFrame(columns=hqm_columns)
+
+    # Getting S&P500 symbols list
+    stocks = pd.read_csv('./data/sp_500_stocks.csv')
+    symbol_groups = chunks(stocks["Ticker"], 100)
+    symbol_strings = []
+    for _, symbol_group in enumerate(symbol_groups):
+        symbol_strings.append(",".join(symbol_group))
+
+    for symbol_string in symbol_strings:
+        batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
+                             f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
+        data = requests.get(batch_api_call_url).json()
+        for symbol in symbol_string.split(","):
+            hdm_df = pd.concat([
+                hdm_df,
+                pd.Series([
+                    symbol,
+                    data[symbol]["price"],
+                    "N/A",
+                    data[symbol]["stats"]["year1ChangePercent"],
+                    "N/A",
+                    data[symbol]["stats"]["month6ChangePercent"],
+                    "N/A",
+                    data[symbol]["stats"]["month3ChangePercent"],
+                    "N/A",
+                    data[symbol]["stats"]["month1ChangePercent"],
+                    "N/A"
+                ],
+                    index=hqm_columns
+                ).to_frame().T
+            ],
+                ignore_index=True
+            )
+
+    print(hdm_df)
