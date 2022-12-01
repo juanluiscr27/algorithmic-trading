@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import math
 from scipy import stats
+from statistics import mean
 from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 
@@ -106,10 +107,11 @@ def high_quality_momentum():
         "Three-Month Price Return",
         "Three-Month Return Percentile",
         "One-Month Price Return",
-        "One-Month Return Percentile"
+        "One-Month Return Percentile",
+        "HQM Score"
     ]
 
-    hdm_df = pd.DataFrame(columns=hqm_columns)
+    hqm_df = pd.DataFrame(columns=hqm_columns)
 
     # Getting S&P500 symbols list
     stocks = pd.read_csv('./data/sp_500_stocks.csv')
@@ -124,8 +126,8 @@ def high_quality_momentum():
                              f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
         data = requests.get(batch_api_call_url).json()
         for symbol in symbol_string.split(","):
-            hdm_df = pd.concat([
-                hdm_df,
+            hqm_df = pd.concat([
+                hqm_df,
                 pd.Series([
                     symbol,
                     data[symbol]["price"],
@@ -137,6 +139,7 @@ def high_quality_momentum():
                     data[symbol]["stats"]["month3ChangePercent"],
                     np.nan,
                     data[symbol]["stats"]["month1ChangePercent"],
+                    np.nan,
                     np.nan
                 ],
                     index=hqm_columns
@@ -147,11 +150,27 @@ def high_quality_momentum():
 
     # Calculating the time periods percentiles
     time_periods = ["One-Year", "Six-Month", "Three-Month", "One-Month"]
-    for row in hdm_df.index:
+    for row in hqm_df.index:
         for time_period in time_periods:
-            hdm_df.loc[row, f"{time_period} Return Percentile"] = stats.percentileofscore(
-                hdm_df[f"{time_period} Price Return"],
-                hdm_df.loc[row, f"{time_period} Price Return"]
+            hqm_df.loc[row, f"{time_period} Return Percentile"] = stats.percentileofscore(
+                hqm_df[f"{time_period} Price Return"],
+                hqm_df.loc[row, f"{time_period} Price Return"]
             )
 
-    print(hdm_df)
+    # print(hqm_df)
+    return hqm_df
+
+
+def hqm_score():
+    hqm_df = high_quality_momentum()
+    time_periods = ["One-Year", "Six-Month", "Three-Month", "One-Month"]
+
+    for row in hqm_df.index:
+        momentum_percentiles = []
+        for time_period in time_periods:
+            momentum_percentiles.append(hqm_df.loc[row, f"{time_period} Return Percentile"])
+
+        hqm_df.loc[row, "HQM Score"] = mean(momentum_percentiles)
+
+    # print(hqm_df)
+    return hqm_df
