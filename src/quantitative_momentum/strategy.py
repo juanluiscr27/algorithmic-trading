@@ -174,3 +174,11 @@ def hqm_score():
 
     # print(hqm_df)
     return hqm_df
+
+
+def top_50_hqm():
+    hqm_df = hqm_score()
+    hqm_df.sort_values("HQM Score", ascending=False, inplace=True)
+    hqm_df = hqm_df[:50]
+    hqm_df.reset_index(inplace=True)
+    print(hqm_df)
