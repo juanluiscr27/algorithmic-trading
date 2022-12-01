@@ -10,7 +10,8 @@ def main():
     # mtm.remove_low_momentum()
     # mtm.get_shares_to_buy()
     # mtm.high_quality_momentum()
-    mtm.hqm_score()
+    # mtm.hqm_score()
+    mtm.top_50_hqm()
 
 
 if __name__ == "__main__":
