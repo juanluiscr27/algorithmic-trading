@@ -180,5 +180,16 @@ def top_50_hqm():
     hqm_df = hqm_score()
     hqm_df.sort_values("HQM Score", ascending=False, inplace=True)
     hqm_df = hqm_df[:50]
-    hqm_df.reset_index(inplace=True)
+    hqm_df.reset_index(drop=True, inplace=True)
+    # print(hqm_df)
+    return hqm_df
+
+
+def get_hqm_shares_to_buy():
+    hqm_df = top_50_hqm()
+    portfolio_size = set_portfolio()
+    position_size = float(portfolio_size)/len(hqm_df.index)
+    for index in hqm_df.index:
+        hqm_df.loc[index, "Number of Shares to Buy"] = math.floor(position_size / hqm_df.loc[index, "Price"])
+
     print(hqm_df)
