@@ -14,8 +14,17 @@ def import_stocks():
 def stats_api_call(symbol):
     api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/quote?token={IEX_CLOUD_API_TOKEN}"
     data = requests.get(api_url).json()
-    print(data)
+    # print(data)
     return data
+
+
+def parsing_data(symbol):
+    data = stats_api_call(symbol)
+    price = data["latestPrice"]
+    pe_ratio = data["peRatio"]
+
+    print(f"Price {price}")
+    print(f"PE Ratio {pe_ratio}")
 
 
 def chunks(lst, n):
