@@ -12,9 +12,9 @@ def import_stocks():
 
 
 def stats_api_call(symbol):
-    api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/stats?token={IEX_CLOUD_API_TOKEN}"
+    api_url = f"https://sandbox.iexapis.com/stable/stock/{symbol}/quote?token={IEX_CLOUD_API_TOKEN}"
     data = requests.get(api_url).json()
-    # print(data)
+    print(data)
     return data
 
 

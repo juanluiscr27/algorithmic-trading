@@ -3,7 +3,8 @@ import strategy as val
 
 
 def main():
-    val.import_stocks()
+    # val.import_stocks()
+    val.stats_api_call("AAPL")
 
 
 if __name__ == "__main__":
