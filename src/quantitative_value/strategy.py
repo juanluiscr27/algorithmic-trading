@@ -40,19 +40,19 @@ def get_data_batch():
     for _, symbol_group in enumerate(symbol_groups):
         symbol_strings.append(",".join(symbol_group))
 
-    data_columns = ["Ticker", "Price", "One-Year Price Return", "Number of Shares to Buy"]
+    data_columns = ["Ticker", "Price", "Price-to-Earning Ratio", "Number of Shares to Buy"]
     df = pd.DataFrame(columns=data_columns)
     for symbol_string in symbol_strings:
         batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
-                             f"symbols={symbol_string}&types=price,stats&token={IEX_CLOUD_API_TOKEN}"
+                             f"symbols={symbol_string}&types=quote&token={IEX_CLOUD_API_TOKEN}"
         data = requests.get(batch_api_call_url).json()
         for symbol in symbol_string.split(","):
             df = pd.concat([
                 df,
                 pd.Series([
                     symbol,
-                    data[symbol]["price"],
-                    data[symbol]["stats"]["year1ChangePercent"],
+                    data[symbol]["quote"]["latestPrice"],
+                    data[symbol]["quote"]["peRatio"],
                     "N/A"
                 ],
                     index=data_columns
@@ -61,7 +61,7 @@ def get_data_batch():
                 ignore_index=True
             )
 
-    # print(df)
+    print(df)
     return df
 
 

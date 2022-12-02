@@ -5,7 +5,8 @@ import strategy as val
 def main():
     # val.import_stocks()
     # val.stats_api_call("AAPL")
-    val.parsing_data("AAPL")
+    # val.parsing_data("AAPL")
+    val.get_data_batch()
 
 
 if __name__ == "__main__":
