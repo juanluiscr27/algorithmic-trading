@@ -3,7 +3,6 @@ import numpy as np
 import requests
 import math
 from scipy import stats
-from statistics import mean
 from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 

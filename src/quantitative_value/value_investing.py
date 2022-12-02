@@ -3,7 +3,7 @@ import strategy as val
 
 
 def main():
-    print("Value Investing")
+    val.import_stocks()
 
 
 if __name__ == "__main__":
