@@ -99,7 +99,28 @@ def get_shares_to_buy():
     print(value_stocks)
 
 
-def high_quality_value(symbol):
+def high_quality_value():
+    # Columns names
+    hqv_columns = [
+        "Ticker",
+        "Price",
+        "Price-To-Earnings Ratio",
+        "PE Percentile",
+        "Price-To-Book Ratio",
+        "PB Percentile",
+        "Price-To-Sales Ratio",
+        "PS Percentile",
+        "EV/EBITDA",
+        "EV/EBITDA Percentile"
+        "EV/Gross Profit",
+        "EV/Gross Profit Percentile"
+        "HQV Score"
+        "Number of Shares to Buy"
+    ]
+
+    hqv_df = pd.DataFrame(hqv_columns)
+
+    # API request
     batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
                          f"symbols={symbol}&types=quote,advanced-stats&token={IEX_CLOUD_API_TOKEN}"
     data = requests.get(batch_api_call_url).json()
@@ -111,5 +132,3 @@ def high_quality_value(symbol):
     ev_to_ebitda = enterprise_value / ebitda
     gross_profit = data[symbol]["advanced-stats"]["grossProfit"]
     ev_to_gross_profit = enterprise_value / gross_profit
-
-    print(ev_to_gross_profit)

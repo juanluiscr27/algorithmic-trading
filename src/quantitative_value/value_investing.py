@@ -9,7 +9,7 @@ def main():
     # val.get_data_batch()
     # val.remove_glamour_stock()
     # val.get_shares_to_buy()
-    val.high_quality_value("AAPL")
+    val.high_quality_value()
 
 
 if __name__ == "__main__":
