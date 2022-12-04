@@ -84,4 +84,3 @@ def remove_glamour_stock():
     df.drop("index", axis=1, inplace=True)
     # print(df)
     return df
-
