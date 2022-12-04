@@ -84,3 +84,32 @@ def remove_glamour_stock():
     df.drop("index", axis=1, inplace=True)
     # print(df)
     return df
+
+
+def get_shares_to_buy():
+    value_stocks = remove_glamour_stock()
+    portfolio_size = set_portfolio()
+    position_size = portfolio_size / len(value_stocks.index)
+
+    for row in value_stocks.index:
+        value_stocks.loc[row, "Number of Shares to Buy"] = math.floor(
+            position_size / value_stocks.loc[row, "Price"]
+        )
+
+    print(value_stocks)
+
+
+def high_quality_value(symbol):
+    batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
+                         f"symbols={symbol}&types=quote,advanced-stats&token={IEX_CLOUD_API_TOKEN}"
+    data = requests.get(batch_api_call_url).json()
+    pe_ratio = data[symbol]["quote"]["peRatio"]
+    pb_ratio = data[symbol]["advanced-stats"]["priceToBook"]
+    ps_ratio = data[symbol]["advanced-stats"]["priceToSales"]
+    enterprise_value = data[symbol]["advanced-stats"]["enterpriseValue"]
+    ebitda = data[symbol]["advanced-stats"]["EBITDA"]
+    ev_to_ebitda = enterprise_value / ebitda
+    gross_profit = data[symbol]["advanced-stats"]["grossProfit"]
+    ev_to_gross_profit = enterprise_value / gross_profit
+
+    print(ev_to_gross_profit)
