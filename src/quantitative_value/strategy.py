@@ -172,4 +172,9 @@ def high_quality_value():
                 ignore_index=True
             )
 
-    print(hqv_df)
+    # Dealing with missing data
+    for column in ["Price-To-Earnings Ratio", "Price-To-Book Ratio", "Price-To-Sales Ratio", "EV/EBITDA", "EV/Gross Profit"]:
+        hqv_df[column].fillna(hqv_df[column].mean(), inplace=True)
+
+
+    print(hqv_df["EV/EBITDA"])
