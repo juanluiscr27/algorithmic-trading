@@ -176,5 +176,17 @@ def high_quality_value():
     for column in ["Price-To-Earnings Ratio", "Price-To-Book Ratio", "Price-To-Sales Ratio", "EV/EBITDA", "EV/Gross Profit"]:
         hqv_df[column].fillna(hqv_df[column].mean(), inplace=True)
 
+    # Calculating Percentiles
+    metrics = {
+        "Price-To-Earnings Ratio": "PE Percentile",
+        "Price-To-Book Ratio": "PB Percentile",
+        "Price-To-Sales Ratio": "PS Percentile",
+        "EV/EBITDA": "EV/EBITDA Percentile",
+        "EV/Gross Profit": "EV/Gross Profit Percentile"
+    }
 
-    print(hqv_df["EV/EBITDA"])
+    for metric in metrics.keys():
+        for row in hqv_df.index:
+            hqv_df.loc[row, metrics[metric]] = stats.percentileofscore(hqv_df[metric], hqv_df.loc[row, metric])
+
+    print(hqv_df["EV/EBITDA Percentile"])
