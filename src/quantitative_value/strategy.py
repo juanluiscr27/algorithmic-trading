@@ -100,6 +100,13 @@ def get_shares_to_buy():
 
 
 def high_quality_value():
+    # Get stock symbols list
+    stocks = pd.read_csv('./data/sp_500_stocks.csv')
+    symbol_groups = chunks(stocks["Ticker"], 100)
+    symbol_strings = []
+    for _, symbol_group in enumerate(symbol_groups):
+        symbol_strings.append(",".join(symbol_group))
+
     # Columns names
     hqv_columns = [
         "Ticker",
@@ -111,24 +118,58 @@ def high_quality_value():
         "Price-To-Sales Ratio",
         "PS Percentile",
         "EV/EBITDA",
-        "EV/EBITDA Percentile"
+        "EV/EBITDA Percentile",
         "EV/Gross Profit",
-        "EV/Gross Profit Percentile"
-        "HQV Score"
+        "EV/Gross Profit Percentile",
+        "HQV Score",
         "Number of Shares to Buy"
     ]
 
     hqv_df = pd.DataFrame(hqv_columns)
 
-    # API request
-    batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
-                         f"symbols={symbol}&types=quote,advanced-stats&token={IEX_CLOUD_API_TOKEN}"
-    data = requests.get(batch_api_call_url).json()
-    pe_ratio = data[symbol]["quote"]["peRatio"]
-    pb_ratio = data[symbol]["advanced-stats"]["priceToBook"]
-    ps_ratio = data[symbol]["advanced-stats"]["priceToSales"]
-    enterprise_value = data[symbol]["advanced-stats"]["enterpriseValue"]
-    ebitda = data[symbol]["advanced-stats"]["EBITDA"]
-    ev_to_ebitda = enterprise_value / ebitda
-    gross_profit = data[symbol]["advanced-stats"]["grossProfit"]
-    ev_to_gross_profit = enterprise_value / gross_profit
+    # API Batch call request
+    for symbol_string in symbol_strings:
+        batch_api_call_url = f"https://sandbox.iexapis.com/stable/stock/market/batch?" \
+                             f"symbols={symbol_string}&types=quote,advanced-stats&token={IEX_CLOUD_API_TOKEN}"
+
+        data = requests.get(batch_api_call_url).json()
+
+        for symbol in symbol_string.split(","):
+            enterprise_value = data[symbol]["advanced-stats"]["enterpriseValue"]
+            ebitda = data[symbol]["advanced-stats"]["EBITDA"]
+            gross_profit = data[symbol]["advanced-stats"]["grossProfit"]
+            try:
+                ev_to_ebitda = enterprise_value / ebitda
+            except TypeError:
+                ev_to_ebitda = np.nan
+
+            try:
+                ev_to_gross_profit = enterprise_value / gross_profit
+            except TypeError:
+                ev_to_gross_profit = np.nan
+
+            hqv_df = pd.concat([
+                hqv_df,
+                pd.Series([
+                    symbol,
+                    data[symbol]["quote"]["latestPrice"],
+                    data[symbol]["quote"]["peRatio"],
+                    np.nan,
+                    data[symbol]["advanced-stats"]["priceToBook"],
+                    np.nan,
+                    data[symbol]["advanced-stats"]["priceToSales"],
+                    np.nan,
+                    ev_to_ebitda,
+                    np.nan,
+                    ev_to_gross_profit,
+                    np.nan,
+                    np.nan,
+                    np.nan
+                ],
+                    index=hqv_columns,
+                ).to_frame().T
+            ],
+                ignore_index=True
+            )
+
+    print(hqv_df)
