@@ -6,7 +6,8 @@ def main():
     # val.import_stocks()
     # val.stats_api_call("AAPL")
     # val.parsing_data("AAPL")
-    val.get_data_batch()
+    # val.get_data_batch()
+    val.remove_glamour_stock()
 
 
 if __name__ == "__main__":
