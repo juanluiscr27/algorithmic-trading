@@ -3,7 +3,7 @@ import numpy as np
 import requests
 import math
 from scipy import stats
-# from statistics import mean
+from statistics import mean
 from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 
@@ -221,3 +221,13 @@ def top_50_hqv():
     hqv_df = hqv_df.reset_index(drop=True, inplace=True)
     return hqv_df
 
+
+def get_hqv_shares_to_buy():
+    hqv_df = top_50_hqv()
+    portfolio_size = set_portfolio()
+    position_size = portfolio_size / len(hqv_df.index)
+
+    for row in hqv_df.index:
+        hqv_df.loc[row, "Number of Shares to Buy"] = math.floor(position_size / hqv_df.loc[row, "Price"])
+
+    print(hqv_df)
