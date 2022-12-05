@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import math
 from scipy import stats
+from statistics import mean
 from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 
@@ -189,4 +190,24 @@ def high_quality_value():
         for row in hqv_df.index:
             hqv_df.loc[row, metrics[metric]] = stats.percentileofscore(hqv_df[metric], hqv_df.loc[row, metric])
 
-    print(hqv_df["EV/EBITDA Percentile"])
+    # print(hqv_df-)
+    return hqv_df
+
+
+def hqv_score():
+    hqv_df = high_quality_value()
+    metrics = {
+        "Price-To-Earnings Ratio": "PE Percentile",
+        "Price-To-Book Ratio": "PB Percentile",
+        "Price-To-Sales Ratio": "PS Percentile",
+        "EV/EBITDA": "EV/EBITDA Percentile",
+        "EV/Gross Profit": "EV/Gross Profit Percentile"
+    }
+    for row in hqv_df.index:
+        values_percentiles = []
+        for metric in metrics.keys():
+            values_percentiles.append(hqv_df.loc[row, metrics[metric]])
+
+        hqv_df.loc[row, "HQV Score"] = mean(values_percentiles)
+
+    print(hqv_df)
