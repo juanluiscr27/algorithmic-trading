@@ -3,7 +3,7 @@ import numpy as np
 import requests
 import math
 from scipy import stats
-from statistics import mean
+# from statistics import mean
 from src.sp500.project_secrets import IEX_CLOUD_API_TOKEN
 
 
@@ -210,4 +210,14 @@ def hqv_score():
 
         hqv_df.loc[row, "HQV Score"] = mean(values_percentiles)
 
-    print(hqv_df)
+    # print(hqv_df)
+    return hqv_df
+
+
+def top_50_hqv():
+    hqv_df = hqv_score()
+    hqv_df = hqv_df.sort_values("HQV Score", ascending=True, inplace=True)
+    hqv_df = hqv_df[:50]
+    hqv_df = hqv_df.reset_index(drop=True, inplace=True)
+    return hqv_df
+
